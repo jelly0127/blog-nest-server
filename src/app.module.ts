@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { ArticleModule } from './modules/article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
+import { TagModule } from './modules/tag/tag.module';
+import { PictureModule } from './modules/picture/picture.module';
 @Module({
   imports: [
     // 使用 TypeORM 配置数据库
@@ -21,6 +23,8 @@ import { UserModule } from './modules/user/user.module';
     }),
     ArticleModule,
     UserModule,
+    TagModule,
+    PictureModule,
   ],
   controllers: [AppController],
   providers: [AppService],

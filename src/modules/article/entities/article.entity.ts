@@ -1,38 +1,11 @@
-// src/modules/article/entity/article.entity.ts
+// src/modules/article/entity/articel.entity.ts
 
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  CreateDateColumn,
-  VersionColumn,
-} from 'typeorm';
+import { Common } from 'src/common/entity/common.entity';
+import { Tag } from 'src/modules/tag/entities/tag.entity';
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
-export class Article {
-  // 主键id
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  // 创建时间
-  @CreateDateColumn()
-  createTime: Date;
-
-  // 更新时间
-  @UpdateDateColumn()
-  updateTime: Date;
-
-  // 软删除
-  @Column({
-    default: false,
-  })
-  isDelete: boolean;
-
-  // 更新次数
-  @VersionColumn()
-  version: number;
-
+export class Article extends Common {
   // 文章标题
   @Column('text')
   title: string;
@@ -44,4 +17,9 @@ export class Article {
   // 文章内容
   @Column('text')
   content: string;
+
+  // 标签
+  @ManyToMany((type) => Tag, (tag) => tag.articles)
+  @JoinTable()
+  tags: Tag[];
 }
