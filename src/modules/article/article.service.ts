@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleCreateDTO } from './dto/article-create.dto';
 import { ArticleEditDTO } from './dto/article-edit.dto';
 import { IdDTO } from './dto/id.dto';
@@ -38,13 +38,22 @@ export class ArticleService {
     return list;
   }
 
+  // src/modules/article/article.service.ts
+
   async getOne(idDto: IdDTO) {
     const { id } = idDto;
-    const articleDetial = await this.articleRepository
+    const articleDetail = await this.articleRepository
       .createQueryBuilder('article')
       .where('article.id = :id', { id })
       .getOne();
-    return articleDetial;
+
+    if (!articleDetail) {
+      throw new NotFoundException('找不到文章');
+    }
+
+    const result = articleDetail;
+
+    return result;
   }
 
   async create(articleCreateDTO: ArticleCreateDTO): Promise<Article> {
