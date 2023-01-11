@@ -8,8 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { TagModule } from './modules/tag/tag.module';
 import { PictureModule } from './modules/picture/picture.module';
-import { UploadsService } from './modules/uploads/uploads.service';
-import { UploadsModule } from './modules/uploads/uploads.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 @Module({
   imports: [
     // 使用 TypeORM 配置数据库
@@ -23,14 +23,16 @@ import { UploadsModule } from './modules/uploads/uploads.module';
       entities: ['dist/modules/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env'],
+    }),
     ArticleModule,
     UserModule,
     TagModule,
     PictureModule,
-    UploadsModule,
-    UploadsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UploadsService],
+  providers: [AppService],
 })
 export class AppModule {}

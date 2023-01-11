@@ -11,6 +11,7 @@ import { PictureCreateDto } from './dto/picture-create.dto';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { IdDTO } from 'src/common/dto/id.dto';
+import { IsNotEmpty } from 'class-validator';
 
 @Injectable()
 export class PictureService {
@@ -41,9 +42,9 @@ export class PictureService {
     const picture = new Picture();
     picture.src = pictureCreateDTO.src;
     picture.sign = pictureCreateDTO.sign;
-    const result = await this.pictureRepository.save(picture);
+    const result = this.pictureRepository.save(picture);
     return {
-      info: result,
+      info: await result,
     };
   }
 
@@ -57,14 +58,13 @@ export class PictureService {
 
   async getOneById(idDto: IdDTO) {
     const { id } = idDto;
-
-    const res = await this.pictureRepository
+    const res = this.pictureRepository
       .createQueryBuilder('picture')
       .where('picture.id = :id', { id })
       .getOne();
 
     return {
-      info: res,
+      info: await res,
     };
   }
 

@@ -8,8 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { createWriteStream } from 'fs';
+import { ApiOkResponse, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { join } from 'path';
 import { PageDTO } from 'src/common/dto/Page.dto';
 import { PictureService } from './picture.service';
@@ -17,6 +16,8 @@ import { PictureInfoSuccessVO, PictureInfoVO } from './vo/picture-info.vo';
 import { PictureListSuccessVO, PictureListVO } from './vo/picture-list.vo';
 import type { Response } from 'express';
 import { zip } from 'compressing';
+import { PictureDTO } from './dto/picture.dto';
+import { IsNotEmpty } from 'class-validator';
 @ApiTags('图床模块')
 @Controller('picture')
 export class PictureController {
@@ -29,6 +30,7 @@ export class PictureController {
     return await this.pictureService.getMany(pageDto);
   }
   //文件上传
+
   @ApiOkResponse({ description: '上传图片', type: PictureInfoSuccessVO })
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
