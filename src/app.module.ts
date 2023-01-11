@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { TagModule } from './modules/tag/tag.module';
 import { PictureModule } from './modules/picture/picture.module';
+import { UploadsService } from './modules/uploads/uploads.service';
+import { UploadsModule } from './modules/uploads/uploads.module';
 @Module({
   imports: [
     // 使用 TypeORM 配置数据库
@@ -25,8 +27,10 @@ import { PictureModule } from './modules/picture/picture.module';
     UserModule,
     TagModule,
     PictureModule,
+    UploadsModule,
+    UploadsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UploadsService],
 })
 export class AppModule {}

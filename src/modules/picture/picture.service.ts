@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDTO } from 'src/common/dto/Page.dto';
 import { getPagination } from 'src/utils/index.util';
 import { Repository } from 'typeorm';
 import { PictureInfoVO } from './vo/picture-info.vo';
-import * as fs from 'fs';
 import { encryptFileMD5 } from 'src/utils/cryptogram.util';
 import { uploadStaticSrc } from 'src/config/upload/upload.config';
 import { Picture } from './entities/picture.entity';
 import { PictureCreateDto } from './dto/picture-create.dto';
+import { createWriteStream } from 'fs';
+import { join } from 'path';
+import { IdDTO } from 'src/common/dto/id.dto';
 
 @Injectable()
 export class PictureService {
@@ -21,7 +23,7 @@ export class PictureService {
     const { page, pageSize } = pageDto;
     const getList = this.pictureRepository
       .createQueryBuilder('picture')
-      .select(['picture.src'])
+      .select(['picture.src', 'picture.id', 'picture.sign'])
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();
@@ -46,10 +48,24 @@ export class PictureService {
   }
 
   async getOneBySign(sign: string) {
-    return await this.pictureRepository
+    const res = await this.pictureRepository
       .createQueryBuilder('picture')
       .where('picture.sign = :sign', { sign })
       .getOne();
+    return res;
+  }
+
+  async getOneById(idDto: IdDTO) {
+    const { id } = idDto;
+
+    const res = await this.pictureRepository
+      .createQueryBuilder('picture')
+      .where('picture.id = :id', { id })
+      .getOne();
+
+    return {
+      info: res,
+    };
   }
 
   async upload(file: any) {
@@ -67,12 +83,12 @@ export class PictureService {
       };
     }
 
-    const arr = file.originalname.split('.');
-    const fileType = arr[arr.length - 1];
-    const fileName = currentSign + '.' + fileType;
-    fs.writeFileSync(`./upload/${fileName}`, buffer);
+    const writeStream = createWriteStream(
+      join(__dirname, uploadStaticSrc, `${file.originalname}`),
+    );
+    writeStream.write(file.buffer);
 
-    const src = uploadStaticSrc + fileName;
+    const src = uploadStaticSrc + '/' + file.originalname;
 
     this.create({ src, sign: currentSign });
 

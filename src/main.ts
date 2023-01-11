@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { uploadStaticSrc } from './config/upload/upload.config';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { TransformInterceptor } from './interceptor/transform/transform.interceptor';
@@ -16,10 +15,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.enableCors();
 
-  app.useStaticAssets(join(__dirname, '..', 'upload'), {
-    prefix: uploadStaticSrc,
-  });
+  // 配置静态资源目录
+  app.useStaticAssets(join(__dirname, '../public/'), { prefix: '/static/' });
 
   const options = new DocumentBuilder()
     .setTitle('blog-serve')
