@@ -20,6 +20,7 @@ export class ArticleService {
 
   async getMore(pageDTO: PageDTO) {
     const { page = 1, pageSize = 10 } = pageDTO;
+
     const getList = this.articleRepository
       .createQueryBuilder('article')
       .where({ isDelete: false })

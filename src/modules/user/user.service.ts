@@ -63,8 +63,6 @@ export class UserService {
       .where({ mobile })
       .getOne();
 
-    console.log({ user });
-
     if (!user) {
       throw new NotFoundException('用户不存在');
     }

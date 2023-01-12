@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { TagModule } from './modules/tag/tag.module';
 import { PictureModule } from './modules/picture/picture.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       port: 3306,
       username: 'root',
       password: '',
-      database: 'nest_test',
+      database: 'nest_blog',
       entities: ['dist/modules/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
